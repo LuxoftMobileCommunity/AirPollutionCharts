@@ -19,7 +19,7 @@ public class DetailedChartActivity extends Activity {
 
         Intent intent = getIntent();
         ArrayList<PollutionChartData> data = (ArrayList<PollutionChartData>) intent.getSerializableExtra("chartData");
-        ArrayList<ThresholdData> thresholdValues = (ArrayList<ThresholdData>) intent.getSerializableExtra("thresholdValues");
+        ArrayList<ThresholdChartData> thresholdValues = (ArrayList<ThresholdChartData>) intent.getSerializableExtra("thresholdValues");
 
         final LinearLayout detailedChartContainer = (LinearLayout) findViewById(R.id.detailedChart);
         final PollutionChartView detailedChart = new PollutionChartView(this);

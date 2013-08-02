@@ -6,18 +6,18 @@ import android.graphics.Paint;
 import android.widget.LinearLayout;
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
+import org.achartengine.chart.PointStyle;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class PollutionChartView extends LinearLayout {
 
     private ArrayList<PollutionChartData> dataList;
-    private ArrayList<ThresholdData> thresholdValues;
+    private ArrayList<ThresholdChartData> thresholdValues;
 
     private GraphicalView mChart;
 
@@ -56,8 +56,8 @@ public class PollutionChartView extends LinearLayout {
         mRenderer = getRenderer();
         mRenderer.setChartTitle(this.chartTitle);
 
-        XYSeriesRenderer mTresholdSeriesRenderer;
-        XYSeriesRenderer mDataSeriesRenderer;
+        XYSeriesRenderer thresholdSeriesRenderer;
+        XYSeriesRenderer dataSeriesRenderer;
 
         //init data
         TimeSeries dataSeries;
@@ -67,30 +67,33 @@ public class PollutionChartView extends LinearLayout {
                 dataSeries.add(measurement.getTime(), measurement.getValue());
             }
             mDataSet.addSeries(dataSeries);
-            mDataSeriesRenderer = new XYSeriesRenderer();
-            mDataSeriesRenderer.setColor(Color.WHITE);
-            mDataSeriesRenderer.setFillBelowLine(true);
-            mDataSeriesRenderer.setFillBelowLineColor(Color.BLUE);
+            dataSeriesRenderer = new XYSeriesRenderer();
+            dataSeriesRenderer.setColor(Color.WHITE);
+            dataSeriesRenderer.setFillBelowLine(true);
+            dataSeriesRenderer.setFillBelowLineColor(Color.BLUE);
+            dataSeriesRenderer.setPointStyle(PointStyle.SQUARE);
+            dataSeriesRenderer.setFillPoints(true);
 
-            mRenderer.addSeriesRenderer(mDataSeriesRenderer);
+            mRenderer.addSeriesRenderer(dataSeriesRenderer);
         }
 
         int dataCount = mDataSet.getSeriesCount();
 
         //init thresholds
         if (thresholdValues != null) {
-            for (ThresholdData value : thresholdValues) {
+            for (ThresholdChartData value : thresholdValues) {
                 for (PollutionChartData data : dataList) {
                     TimeSeries thresholdSeries = new TimeSeries(data.getFactor() + " Threshold " + value);
                     for (Measurement measurement : data.getMeasurements()) {
                         thresholdSeries.add(measurement.getTime(), value.getValue());
                     }
                     mDataSet.addSeries(dataCount, thresholdSeries);
-                    mTresholdSeriesRenderer = new XYSeriesRenderer();
-                    mTresholdSeriesRenderer.setColor(value.getColor());
-                    mTresholdSeriesRenderer.setFillBelowLine(true);
-                    mTresholdSeriesRenderer.setFillBelowLineColor(value.getColor());
-                    mRenderer.addSeriesRenderer(mTresholdSeriesRenderer);
+                    thresholdSeriesRenderer = new XYSeriesRenderer();
+                    thresholdSeriesRenderer.setColor(value.getColor());
+                    thresholdSeriesRenderer.setFillBelowLine(true);
+                    thresholdSeriesRenderer.setFillBelowLineColor(value.getAreaColor());
+                    thresholdSeriesRenderer.setLineWidth(2);
+                    mRenderer.addSeriesRenderer(thresholdSeriesRenderer);
                 }
             }
         }
@@ -142,11 +145,11 @@ public class PollutionChartView extends LinearLayout {
         addView(mChart);
     }
 
-    public ArrayList<ThresholdData> getThresholdValues() {
+    public ArrayList<ThresholdChartData> getThresholdValues() {
         return thresholdValues;
     }
 
-    public void setThresholdValues(ArrayList<ThresholdData> thresholdValues) {
+    public void setThresholdValues(ArrayList<ThresholdChartData> thresholdValues) {
         this.thresholdValues = thresholdValues;
     }
 }

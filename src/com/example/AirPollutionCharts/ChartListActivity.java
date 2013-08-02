@@ -42,7 +42,7 @@ public class ChartListActivity extends Activity {
             });
 
             ArrayList<PollutionChartData> data = createMockData("Factor " + i);
-            ArrayList<ThresholdData> thresholdValues = createMockThresholds();
+            ArrayList<ThresholdChartData> thresholdValues = createMockThresholds();
 
             chart.setThresholdValues(thresholdValues);
             chart.setDataList(data);
@@ -69,9 +69,9 @@ public class ChartListActivity extends Activity {
         return data;
     }
 
-    private ArrayList<ThresholdData> createMockThresholds() {
-        ArrayList<ThresholdData> thresholdValues = new ArrayList<ThresholdData>();
-        thresholdValues.add(new ThresholdData((double)randomWithinRange(20, 30), Color.argb(100, 0, 255, 0)));
+    private ArrayList<ThresholdChartData> createMockThresholds() {
+        ArrayList<ThresholdChartData> thresholdValues = new ArrayList<ThresholdChartData>();
+        thresholdValues.add(new ThresholdChartData((double)randomWithinRange(20, 30), Color.RED, Color.argb(60, 0, 255, 0)));
         return thresholdValues;
     }
 
