@@ -16,13 +16,12 @@ public class DetailedChartActivity extends Activity {
     }
 
     private void init() {
-        final LinearLayout detailedChartContainer = (LinearLayout) findViewById(R.id.detailedChart);
-        final LinearLayout chartLegendContainer = (LinearLayout) findViewById(R.id.chartLegend);
 
         Intent intent = getIntent();
         ArrayList<PollutionChartData> data = (ArrayList<PollutionChartData>) intent.getSerializableExtra("chartData");
-        ArrayList<Double> thresholdValues = (ArrayList<Double>) intent.getSerializableExtra("thresholdValues");
+        ArrayList<ThresholdData> thresholdValues = (ArrayList<ThresholdData>) intent.getSerializableExtra("thresholdValues");
 
+        final LinearLayout detailedChartContainer = (LinearLayout) findViewById(R.id.detailedChart);
         final PollutionChartView detailedChart = new PollutionChartView(this);
         detailedChart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
         detailedChart.setChartTitle(data.get(0).getFactor());
@@ -30,11 +29,12 @@ public class DetailedChartActivity extends Activity {
         detailedChart.setDataList(data);
         detailedChartContainer.addView(detailedChart);
 
-        final PollutionChartView chartLegend = new PollutionChartView(this);
-        chartLegend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
-        chartLegend.setChartTitle("Chart Legend");
-        chartLegend.setThresholdValues(thresholdValues);
-        chartLegend.setDataList(data);
-        chartLegendContainer.addView(chartLegend);
+//        final LinearLayout chartLegendContainer = (LinearLayout) findViewById(R.id.chartLegend);
+//        final PollutionChartView chartLegend = new PollutionChartView(this);
+//        chartLegend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+//        chartLegend.setChartTitle("Chart Legend");
+//        chartLegend.setThresholdValues(thresholdValues);
+//        chartLegend.setDataList(data);
+//        chartLegendContainer.addView(chartLegend);
     }
 }

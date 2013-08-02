@@ -10,15 +10,15 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
-            android:layout_weight="70">
+            android:layout_weight="100">
     </LinearLayout>
-    <LinearLayout
+    <!--<LinearLayout
             android:id="@+id/chartLegend"
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
             android:layout_weight="30">
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>
 

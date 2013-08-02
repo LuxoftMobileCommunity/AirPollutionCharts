@@ -2,6 +2,7 @@ package com.example.AirPollutionCharts;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +42,7 @@ public class ChartListActivity extends Activity {
             });
 
             ArrayList<PollutionChartData> data = createMockData("Factor " + i);
-            ArrayList<Double> thresholdValues = createMockThresholds();
+            ArrayList<ThresholdData> thresholdValues = createMockThresholds();
 
             chart.setThresholdValues(thresholdValues);
             chart.setDataList(data);
@@ -53,14 +54,14 @@ public class ChartListActivity extends Activity {
 
     private ArrayList<PollutionChartData> createMockData(String factor) {
         ArrayList<Measurement> measurements = new ArrayList<Measurement>();
-        measurements.add(new Measurement(new Date(2013, 7, 1, 10, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 11, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 12, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 13, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 14, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 15, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 16, 0), randomWithinRange(10, 20)));
-        measurements.add(new Measurement(new Date(2013, 7, 1, 17, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 10, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 11, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 12, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 13, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 14, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 15, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 16, 0), randomWithinRange(0, 40)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 17, 0), randomWithinRange(0, 40)));
 
         ArrayList<PollutionChartData> data = new ArrayList<PollutionChartData>();
         data.add(new PollutionChartData(factor, measurements));
@@ -68,10 +69,9 @@ public class ChartListActivity extends Activity {
         return data;
     }
 
-    private ArrayList<Double> createMockThresholds() {
-        ArrayList<Double> thresholdValues = new ArrayList<Double>();
-        thresholdValues.add((double) randomWithinRange(12, 18));
-        thresholdValues.add((double) randomWithinRange(12, 18));
+    private ArrayList<ThresholdData> createMockThresholds() {
+        ArrayList<ThresholdData> thresholdValues = new ArrayList<ThresholdData>();
+        thresholdValues.add(new ThresholdData((double)randomWithinRange(20, 30), Color.argb(100, 0, 255, 0)));
         return thresholdValues;
     }
 
