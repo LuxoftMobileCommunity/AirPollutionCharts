@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.Random;
 
 public class ChartListActivity extends Activity {
 
@@ -18,36 +19,64 @@ public class ChartListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chartlist);
 
+        init();
     }
 
-    protected void onResume() {
-        super.onResume();
+    private void init() {
         final LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
 
         for (int i = 0; i < 10; i++) {
             final PollutionChartView chart = new PollutionChartView(this);
-            chart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 120));
+            chart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 200));
             chart.setChartTitle("Factor: " + i);
             chart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "clicked " + ((PollutionChartView) v).getChartTitle());
                     Intent detailedChartIntent = new Intent(v.getContext(), DetailedChartActivity.class);
+                    detailedChartIntent.putExtra("chartData", ((PollutionChartView) v).getDataList());
+                    detailedChartIntent.putExtra("thresholdValues", ((PollutionChartView) v).getThresholdValues());
                     startActivityForResult(detailedChartIntent, 0);
                 }
             });
 
-            List<PollutionChartData> data = new ArrayList<PollutionChartData>();
-            List<Double> thresholdValues = new ArrayList<Double>();
-            thresholdValues.add(6.0);
-            thresholdValues.add(3.0);
+            ArrayList<PollutionChartData> data = createMockData("Factor " + i);
+            ArrayList<Double> thresholdValues = createMockThresholds();
 
             chart.setThresholdValues(thresholdValues);
-            chart.setData(data);
+            chart.setDataList(data);
             layout.addView(chart);
 
         }
+    }
 
+
+    private ArrayList<PollutionChartData> createMockData(String factor) {
+        ArrayList<Measurement> measurements = new ArrayList<Measurement>();
+        measurements.add(new Measurement(new Date(2013, 7, 1, 10, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 11, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 12, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 13, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 14, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 15, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 16, 0), randomWithinRange(10, 20)));
+        measurements.add(new Measurement(new Date(2013, 7, 1, 17, 0), randomWithinRange(10, 20)));
+
+        ArrayList<PollutionChartData> data = new ArrayList<PollutionChartData>();
+        data.add(new PollutionChartData(factor, measurements));
+
+        return data;
+    }
+
+    private ArrayList<Double> createMockThresholds() {
+        ArrayList<Double> thresholdValues = new ArrayList<Double>();
+        thresholdValues.add((double) randomWithinRange(12, 18));
+        thresholdValues.add((double) randomWithinRange(12, 18));
+        return thresholdValues;
+    }
+
+    private int randomWithinRange(int min, int max) {
+        return new Random().nextInt(max - min + 1) + min;
     }
 
 }

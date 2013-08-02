@@ -1,32 +1,31 @@
 package com.example.AirPollutionCharts;
 
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-public class PollutionChartData {
+public class PollutionChartData implements Serializable {
 
-    private Date time;
-    private Double value;
+    private String factor;
+    private ArrayList<Measurement> measurements;
 
-    public PollutionChartData(Date time, double value) {
-        this.time = time;
-        this.value = value;
+    public PollutionChartData(String factor, ArrayList<Measurement> measurements) {
+        this.factor = factor;
+        this.measurements = measurements;
     }
 
-    public Date getTime() {
-        return time;
+    public String getFactor() {
+        return factor;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setFactor(String factor) {
+        this.factor = factor;
     }
 
-    public double getValue() {
-        return value;
+    public ArrayList<Measurement> getMeasurements() {
+        return measurements;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setMeasurements(ArrayList<Measurement> measurements) {
+        this.measurements = measurements;
     }
-
 }

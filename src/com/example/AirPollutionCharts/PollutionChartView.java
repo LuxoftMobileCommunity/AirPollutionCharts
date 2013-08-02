@@ -11,31 +11,22 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList;
 
 public class PollutionChartView extends LinearLayout {
 
-    private List<PollutionChartData> data;
-    private List<Double> thresholdValues;
+    private ArrayList<PollutionChartData> dataList;
+    private ArrayList<Double> thresholdValues;
 
     private GraphicalView mChart;
 
     private XYMultipleSeriesDataset mDataset = new XYMultipleSeriesDataset();
 
     private XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
-    private XYSeriesRenderer mDataSeriesRenderer = new XYSeriesRenderer();
-    private XYSeriesRenderer mTresholdSeriesRenderer = new XYSeriesRenderer();
-
-    private TimeSeries mCurrentSeries;
-    private TimeSeries mTreshold1Series;
 
     private String chartTitle;
     private String xTitle;
     private String yTitle;
-
-    private double treshold1 = 4;
 
     public PollutionChartView(Context context) {
         super(context);
@@ -60,59 +51,42 @@ public class PollutionChartView extends LinearLayout {
         return renderer;
     }
 
-    private void addSampleData() {
-
-        if (thresholdValues != null) {
-            Iterator<Double> thresholdIterator = thresholdValues.iterator();
-            Double value;
-            while (thresholdIterator.hasNext()) {
-                value = thresholdIterator.next();
-                for (int i = 0; i < 24; i++) {
-                    mTreshold1Series.add(getTodayWithHours(i), value);
-                }
-            }
-        }
-
-        for (int i = 0; i < 24; i++) {
-            mCurrentSeries.add(getTodayWithHours(i), i / 3);
-        }
-
-//        mCurrentSeries.add(getTodayWithHours(12), 2);
-//        mCurrentSeries.add(getTodayWithHours(13), 3);
-//        mCurrentSeries.add(getTodayWithHours(14), 4);
-//        mCurrentSeries.add(getTodayWithHours(15), 5);
-//        mCurrentSeries.add(getTodayWithHours(16), 6);
-//
-//        mTreshold1Series.add(getTodayWithHours(12), treshold1);
-//        mTreshold1Series.add(getTodayWithHours(13), treshold1);
-//        mTreshold1Series.add(getTodayWithHours(14), treshold1);
-//        mTreshold1Series.add(getTodayWithHours(15), treshold1);
-//        mTreshold1Series.add(getTodayWithHours(16), treshold1);
-    }
-
-    private Date getTodayWithHours(int hours) {
-        Date date = new Date(2013, 6, 25, hours, 0, 0);
-        return date;
-    }
-
     private void initChart() {
-
-        mTreshold1Series = new TimeSeries("Treshold 1");
-        mCurrentSeries = new TimeSeries("Factor 1");
-
-        mDataset.addSeries(mTreshold1Series);
-        mDataset.addSeries(mCurrentSeries);
 
         mRenderer = getRenderer();
         mRenderer.setChartTitle(this.chartTitle);
 
-        mTresholdSeriesRenderer = new XYSeriesRenderer();
-        mTresholdSeriesRenderer.setColor(Color.argb(200, 255, 0, 0));
-        mRenderer.addSeriesRenderer(mTresholdSeriesRenderer);
+        XYSeriesRenderer mTresholdSeriesRenderer;
+        XYSeriesRenderer mDataSeriesRenderer;
 
-        mDataSeriesRenderer = new XYSeriesRenderer();
-        mDataSeriesRenderer.setColor(Color.WHITE);
-        mRenderer.addSeriesRenderer(mDataSeriesRenderer);
+        //init thresholds
+        if (thresholdValues != null) {
+            for (Double value : thresholdValues) {
+                for (PollutionChartData data : dataList) {
+                    TimeSeries thresholdSeries = new TimeSeries(data.getFactor() + " Threshold " + value);
+                    for (Measurement measurement : data.getMeasurements()) {
+                        thresholdSeries.add(measurement.getTime(), value);
+                    }
+                    mDataset.addSeries(thresholdSeries);
+                    mTresholdSeriesRenderer = new XYSeriesRenderer();
+                    mTresholdSeriesRenderer.setColor(Color.argb(200, 255, 0, 0));
+                    mRenderer.addSeriesRenderer(mTresholdSeriesRenderer);
+                }
+            }
+        }
+
+        //init data
+        TimeSeries dataSeries;
+        for (PollutionChartData data : dataList) {
+            dataSeries = new TimeSeries(data.getFactor());
+            for (Measurement measurement : data.getMeasurements()) {
+                dataSeries.add(measurement.getTime(), measurement.getValue());
+            }
+            mDataset.addSeries(dataSeries);
+            mDataSeriesRenderer = new XYSeriesRenderer();
+            mDataSeriesRenderer.setColor(Color.WHITE);
+            mRenderer.addSeriesRenderer(mDataSeriesRenderer);
+        }
 
     }
 
@@ -143,20 +117,12 @@ public class PollutionChartView extends LinearLayout {
         mRenderer.setYTitle(this.yTitle);
     }
 
-    public double getTreshold1() {
-        return treshold1;
+    public ArrayList<PollutionChartData> getDataList() {
+        return dataList;
     }
 
-    public void setTreshold1(double treshold1) {
-        this.treshold1 = treshold1;
-    }
-
-    public List<PollutionChartData> getData() {
-        return data;
-    }
-
-    public void setData(List<PollutionChartData> data) {
-        this.data = data;
+    public void setDataList(ArrayList<PollutionChartData> dataList) {
+        this.dataList = dataList;
         init();
     }
 
@@ -166,16 +132,15 @@ public class PollutionChartView extends LinearLayout {
         }
 
         initChart();
-        addSampleData();
         mChart = ChartFactory.getTimeChartView(this.getContext(), mDataset, mRenderer, "HH" + ":00:00");
         addView(mChart);
     }
 
-    public List<Double> getThresholdValues() {
+    public ArrayList<Double> getThresholdValues() {
         return thresholdValues;
     }
 
-    public void setThresholdValues(List<Double> thresholdValues) {
+    public void setThresholdValues(ArrayList<Double> thresholdValues) {
         this.thresholdValues = thresholdValues;
     }
 }
